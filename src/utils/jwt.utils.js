@@ -6,7 +6,7 @@ const jwtConfig = {
 };
 
 function createToken(user) {
-  return jwt.sign({ data: { email: user.email } }, process.env.JWT_SECRET, jwtConfig);
+  return jwt.sign({ data: { email: user.email, id: user.id } }, process.env.JWT_SECRET, jwtConfig);
 }
 
 function validateToken(token) {
