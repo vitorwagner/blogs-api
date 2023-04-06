@@ -14,7 +14,13 @@ const newPostSchema = Joi.object({
   userId: Joi.number().required().label('userId'),
 });
 
+const updatedPostSchema = Joi.object({
+  title: Joi.string().required().label('title'),
+  content: Joi.string().required().label('content'),
+});
+
 module.exports = {
   newUserSchema,
   newPostSchema,
+  updatedPostSchema,
 };

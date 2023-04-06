@@ -49,8 +49,26 @@ async function getPostById(id) {
   return post;
 }
 
+async function updatePost(userId, postId, post) {
+  const error = schema.validateUpdatedPost(post);
+  if (error.type) {
+    return { type: 'INVALID_VALUE', message: 'Some required fields are missing' };
+  }
+
+  const result = await getPostById(postId);
+
+  if (result.userId !== userId) {
+    return { type: 'UNAUTHORIZED', message: 'Unauthorized user' };
+  }
+
+  await BlogPost.update(post, { where: { id: postId } });
+
+  return getPostById(postId);
+}
+
 module.exports = {
   createPost,
   getAllPosts,
   getPostById,
+  updatePost,
 };
