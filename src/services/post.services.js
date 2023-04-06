@@ -66,9 +66,26 @@ async function updatePost(userId, postId, post) {
   return getPostById(postId);
 }
 
+async function deletePost(userId, postId) {
+  const result = await getPostById(postId);
+
+  if (!result) {
+    return { type: 'NOT_FOUND', message: 'Post does not exist' };
+  }
+
+  if (result.userId !== userId) {
+    return { type: 'UNAUTHORIZED', message: 'Unauthorized user' };
+  }
+
+  await BlogPost.destroy({ where: { id: postId } });
+
+  return { message: 'Post deleted successfully' };
+}
+
 module.exports = {
   createPost,
   getAllPosts,
   getPostById,
   updatePost,
+  deletePost,
 };
