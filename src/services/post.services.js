@@ -82,10 +82,28 @@ async function deletePost(userId, postId) {
   return { message: 'Post deleted successfully' };
 }
 
+async function getPostsByQuery(query) {
+  const posts = await BlogPost.findAll({
+    where: {
+      [Sequelize.Op.or]: [
+        { title: { [Sequelize.Op.like]: `%${query}%` } },
+        { content: { [Sequelize.Op.like]: `%${query}%` } },
+      ],
+    },
+    include: [
+      { model: User, as: 'user', attributes: { exclude: ['password'] } },
+      { model: Category, as: 'categories', through: { attributes: [] } },
+    ],
+  });
+
+  return posts;
+}
+
 module.exports = {
   createPost,
   getAllPosts,
   getPostById,
   updatePost,
   deletePost,
+  getPostsByQuery,
 };
