@@ -4,7 +4,6 @@ const errorMap = require('../utils/errorMap');
 async function createPost(req, res) {
   const { title, content, categoryIds } = req.body;
   const { id: userId } = req.user;
-  console.log(req.user, userId);
   const post = await PostService.createPost({
     title,
     content,

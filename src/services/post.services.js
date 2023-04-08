@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const config = require('../config/config');
 const schema = require('./validations/validationsInputValues');
-const { User, BlogPost, Category, PostCategory } = require('../models');
+const { User, BlogPost, Category } = require('../models');
 
 const sequelize = new Sequelize(config[process.env.NODE_ENV]);
 
@@ -18,11 +18,8 @@ async function createPost(post) {
   const newPost = await sequelize.transaction(async (transaction) => {
     const postCreated = await BlogPost.create(post, { transaction });
 
-    const postCategories = categoryIds.map((categoryId) => ({
-      postId: postCreated.id, categoryId,
-    }));
+    await postCreated.addCategories(categoryIds, { transaction });
 
-    await PostCategory.bulkCreate(postCategories, { transaction });
     return postCreated;
   });
   return newPost.dataValues;
