@@ -58,13 +58,17 @@ async function updatePost(userId, postId, post) {
 
   const result = await getPostById(postId);
 
+  if (!result) {
+    return { type: 'NOT_FOUND', message: 'Post does not exist' };
+  }
+
   if (result.userId !== userId) {
     return { type: 'UNAUTHORIZED', message: 'Unauthorized user' };
   }
 
-  await BlogPost.update(post, { where: { id: postId } });
+  await result.update(post);
 
-  return getPostById(postId);
+  return result;
 }
 
 async function deletePost(userId, postId) {
