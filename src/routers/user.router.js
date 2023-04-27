@@ -5,8 +5,11 @@ const tokenValidation = require('../middlewares/tokenValidation');
 const router = express.Router();
 
 router.post('/', UserController.createUser);
-router.get('/', tokenValidation, UserController.getAllUsers);
-router.get('/:id', tokenValidation, UserController.getUserById);
-router.delete('/me', tokenValidation, UserController.deleteUser);
+
+router.use(tokenValidation);
+
+router.get('/', UserController.getAllUsers);
+router.get('/:id', UserController.getUserById);
+router.delete('/me', UserController.deleteUser);
 
 module.exports = router;

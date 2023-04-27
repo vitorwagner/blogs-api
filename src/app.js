@@ -1,5 +1,7 @@
 const express = require('express');
+require('express-async-errors');
 const router = require('./routers');
+const errorHandler = require('./middlewares/errorHandler');
 
 // ...
 
@@ -12,6 +14,7 @@ app.get('/', (_request, response) => {
 
 app.use(express.json());
 app.use(router);
+app.use(errorHandler);
 
 // ...
 

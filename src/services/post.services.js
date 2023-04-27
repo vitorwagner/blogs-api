@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const config = require('../config/config');
 const schema = require('./validations/validationsInputValues');
 const { User, BlogPost, Category } = require('../models');
+const GenerateError = require('../utils/generateError');
 
 const sequelize = new Sequelize(config[process.env.NODE_ENV]);
 
@@ -9,11 +10,11 @@ async function createPost(post) {
   const { categoryIds } = post;
   const categoryCheck = await Category.count({ where: { id: categoryIds } });
   if (categoryCheck !== categoryIds.length) {
-    return { type: 'INVALID_VALUE', message: 'one or more "categoryIds" not found' };
+    throw GenerateError(400, 'one or more "categoryIds" not found');
   }
   const error = schema.validateNewPost(post);
   if (error.type) {
-    return { type: 'INVALID_VALUE', message: 'Some required fields are missing' };
+    throw GenerateError(400, 'Some required fields are missing');
   }
   const newPost = await sequelize.transaction(async (transaction) => {
     const postCreated = await BlogPost.create(post, { transaction });
@@ -49,7 +50,10 @@ async function getPostById(id) {
 async function updatePost(userId, postId, post) {
   const error = schema.validateUpdatedPost(post);
   if (error.type) {
-    return { type: 'INVALID_VALUE', message: 'Some required fields are missing' };
+    return {
+      type: 'INVALID_VALUE',
+      message: 'Some required fields are missing',
+    };
   }
 
   const result = await getPostById(postId);

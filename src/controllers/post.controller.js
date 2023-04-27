@@ -11,16 +11,10 @@ async function createPost(req, res) {
     userId,
   });
 
-  if (post.type) {
-    return res
-      .status(errorMap.mapError(post.type))
-      .json({ message: post.message });
-  }
-
   return res.status(201).json(post);
 }
 
-async function getAllPosts(req, res) {
+async function getAllPosts(_req, res) {
   const posts = await PostService.getAllPosts();
 
   return res.status(200).json(posts);
