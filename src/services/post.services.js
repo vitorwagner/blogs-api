@@ -53,14 +53,6 @@ async function getPostById(id) {
 }
 
 async function updatePost(userId, postId, post) {
-  const error = schema.validateUpdatedPost(post);
-  if (error.type) {
-    return {
-      type: 'INVALID_VALUE',
-      message: 'Some required fields are missing',
-    };
-  }
-
   const result = await getPostById(postId);
 
   if (!result) {

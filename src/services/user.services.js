@@ -1,24 +1,19 @@
-const schema = require('./validations/validationsInputValues');
 const { User } = require('../models');
+const { createToken } = require('../utils/jwt.utils');
+const GenerateError = require('../utils/generateError');
 
 async function createUser(user) {
-  const error = schema.validateNewUser(user);
-  if (error.type) {
-    return error;
-  }
-
   const userCheck = await User.findOne({ where: { email: user.email } });
 
   if (userCheck) {
-    return {
-      type: 'EMAIL_ALREADY_EXISTS',
-      message: 'User already registered',
-    };
+    throw GenerateError(409, 'User already registered');
   }
 
   const newUser = await User.create(user);
 
-  return newUser.dataValues;
+  const token = createToken(newUser);
+
+  return token;
 }
 
 async function getAllUsers() {
@@ -28,13 +23,16 @@ async function getAllUsers() {
 
 async function getUserById(id) {
   const user = await User.findOne({ where: { id }, attributes: { exclude: ['password'] } });
+
+  if (!user) {
+    throw GenerateError(404, 'User does not exist');
+  }
+
   return user;
 }
 
 async function deleteUser(id) {
   await User.destroy({ where: { id } });
-
-  return { message: 'User deleted' };
 }
 
 module.exports = {
