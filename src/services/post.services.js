@@ -44,6 +44,11 @@ async function getPostById(id) {
       { model: Category, as: 'categories', through: { attributes: [] } },
     ],
   });
+
+  if (!post) {
+    throw GenerateError(404, 'Post does not exist');
+  }
+
   return post;
 }
 
@@ -59,11 +64,11 @@ async function updatePost(userId, postId, post) {
   const result = await getPostById(postId);
 
   if (!result) {
-    return { type: 'NOT_FOUND', message: 'Post does not exist' };
+    throw GenerateError(404, 'Post does not exist');
   }
 
   if (result.userId !== userId) {
-    return { type: 'UNAUTHORIZED', message: 'Unauthorized user' };
+    throw GenerateError(401, 'Unauthorized user');
   }
 
   await result.update(post);
@@ -75,16 +80,14 @@ async function deletePost(userId, postId) {
   const result = await getPostById(postId);
 
   if (!result) {
-    return { type: 'NOT_FOUND', message: 'Post does not exist' };
+    throw GenerateError(404, 'Post does not exist');
   }
 
   if (result.userId !== userId) {
-    return { type: 'UNAUTHORIZED', message: 'Unauthorized user' };
+    throw GenerateError(401, 'Unauthorized user');
   }
 
-  await BlogPost.destroy({ where: { id: postId } });
-
-  return { message: 'Post deleted successfully' };
+  await result.destroy();
 }
 
 async function getPostsByQuery(query) {

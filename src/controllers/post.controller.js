@@ -1,5 +1,4 @@
 const PostService = require('../services/post.services');
-const errorMap = require('../utils/errorMap');
 
 async function createPost(req, res) {
   const { title, content, categoryIds } = req.body;
@@ -25,10 +24,6 @@ async function getPostById(req, res) {
 
   const post = await PostService.getPostById(id);
 
-  if (!post) {
-    return res.status(404).json({ message: 'Post does not exist' });
-  }
-
   return res.status(200).json(post);
 }
 
@@ -42,12 +37,6 @@ async function updatePost(req, res) {
     content,
   });
 
-  if (post.type) {
-    return res
-      .status(errorMap.mapError(post.type))
-      .json({ message: post.message });
-  }
-
   return res.status(200).json(post);
 }
 
@@ -55,13 +44,7 @@ async function deletePost(req, res) {
   const { id } = req.params;
   const { id: userId } = req.user;
 
-  const post = await PostService.deletePost(userId, id);
-
-  if (post.type) {
-    return res
-      .status(errorMap.mapError(post.type))
-      .json({ message: post.message });
-  }
+  await PostService.deletePost(userId, id);
 
   return res.status(204).end();
 }
