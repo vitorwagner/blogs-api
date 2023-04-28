@@ -1,10 +1,14 @@
-# Recipes App
+# Blogs API
 Projeto da [Trybe](https://www.betrybe.com/).
 
 ## 💻 Projeto
 
 ## 🚀 Tecnologias
 > Este projeto foi desenvolvido com as seguintes tecnologias:
+- Javascript
+- Docker
+- Sequelize
+- Node.js
 
 ## 💬 Contato
 
