@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const config = require('../config/config');
-const schema = require('./validations/validationsInputValues');
 const { User, BlogPost, Category } = require('../models');
 const GenerateError = require('../utils/generateError');
 
@@ -12,10 +11,7 @@ async function createPost(post) {
   if (categoryCheck !== categoryIds.length) {
     throw GenerateError(400, 'one or more "categoryIds" not found');
   }
-  const error = schema.validateNewPost(post);
-  if (error.type) {
-    throw GenerateError(400, 'Some required fields are missing');
-  }
+
   const newPost = await sequelize.transaction(async (transaction) => {
     const postCreated = await BlogPost.create(post, { transaction });
 

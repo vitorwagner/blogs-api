@@ -11,7 +11,6 @@ const newPostSchema = Joi.object({
   title: Joi.string().required().label('title'),
   content: Joi.string().required().label('content'),
   categoryIds: Joi.array().items(Joi.number()).required().label('categoryIds'),
-  userId: Joi.number().required().label('userId'),
 });
 
 const updatedPostSchema = Joi.object({
